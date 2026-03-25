@@ -107,3 +107,13 @@ SecurityEvent
 | where NewProcessName endswith "powershell.exe"
 | where CommandLine has_any ("-enc", "FromBase64String", "IEX", "DownloadString", "Hidden")
 | project TimeGenerated, Computer, Account, ParentProcessName, NewProcessName, CommandLine
+
+Sources
+Microsoft Security Intelligence – Gootloader
+MITRE ATT&CK (S1138)
+Red Canary Threat Detection Report
+Mandiant Threat Intelligence
+
+Disclaimer
+
+This project is intended for educational and defensive security purposes only. All information is derived from publicly available sources. No offensive use is intended.

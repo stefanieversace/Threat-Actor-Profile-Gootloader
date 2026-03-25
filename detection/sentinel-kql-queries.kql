@@ -1,0 +1,42 @@
+// Query 1: Suspicious script host launching JavaScript from user-writeable paths
+SecurityEvent
+| where EventID == 4688
+| where NewProcessName has_any ("wscript.exe", "cscript.exe")
+| where CommandLine has_any (".js", ".jse")
+| where CommandLine has_any ("AppData", "Temp", "Downloads", "Desktop")
+| project TimeGenerated, Computer, Account, ParentProcessName, NewProcessName, CommandLine
+
+// Query 2: PowerShell spawned from script interpreters
+SecurityEvent
+| where EventID == 4688
+| where NewProcessName endswith "powershell.exe"
+| where ParentProcessName has_any ("wscript.exe", "cscript.exe")
+| project TimeGenerated, Computer, Account, ParentProcessName, NewProcessName, CommandLine
+
+// Query 3: Scheduled task creation via PowerShell
+SecurityEvent
+| where EventID == 4688
+| where NewProcessName endswith "powershell.exe"
+| where CommandLine has_any ("New-ScheduledTask", "Register-ScheduledTask", "schtasks")
+| project TimeGenerated, Computer, Account, ParentProcessName, NewProcessName, CommandLine
+
+// Query 4: Obfuscated PowerShell indicators
+SecurityEvent
+| where EventID == 4688
+| where NewProcessName endswith "powershell.exe"
+| where CommandLine has_any ("-enc", "FromBase64String", "IEX", "DownloadString", "Hidden")
+| project TimeGenerated, Computer, Account, ParentProcessName, NewProcessName, CommandLine
+
+// Query 5: Archive to script execution pattern
+SecurityEvent
+| where EventID == 4688
+| where CommandLine has_any (".zip", ".js", ".jse")
+| project TimeGenerated, Computer, Account, ParentProcessName, NewProcessName, CommandLine
+
+// Query 6: Potential Gootloader-related JavaScript execution from Downloads
+SecurityEvent
+| where EventID == 4688
+| where NewProcessName has_any ("wscript.exe", "cscript.exe")
+| where CommandLine has ".js"
+| where CommandLine has "Downloads"
+| project TimeGenerated, Computer, Account, ParentProcessName, NewProcessName, CommandLine

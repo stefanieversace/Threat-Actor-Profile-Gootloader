@@ -1,3 +1,13 @@
+## Detection Strategy
+
+The following detections are designed to identify behaviours associated with Gootloader rather than relying solely on static indicators.
+
+Focus areas include:
+- Script execution from user directories
+- PowerShell spawned by script interpreters
+- Obfuscated command-line activity
+- Scheduled task creation for persistence
+
 // Query 1: Suspicious script host launching JavaScript from user-writeable paths
 SecurityEvent
 | where EventID == 4688

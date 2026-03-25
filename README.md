@@ -108,6 +108,97 @@ SecurityEvent
 | where CommandLine has_any ("-enc", "FromBase64String", "IEX", "DownloadString", "Hidden")
 | project TimeGenerated, Computer, Account, ParentProcessName, NewProcessName, CommandLine
 
+## SOC Analyst Playbook
+
+### Alert Scenario
+A security alert is triggered indicating suspicious script execution involving `wscript.exe` or `cscript.exe`, potentially originating from a user directory such as Downloads or AppData.
+
+---
+
+### Step 1: Initial Triage
+- Review process creation logs (Event ID 4688)
+- Identify:
+  - Parent process
+  - Command line arguments
+  - File execution path
+- Check if execution originated from:
+  - Downloads
+  - AppData
+  - Temp directories
+
+---
+
+### Step 2: Investigate Process Chain
+- Look for suspicious parent-child relationships:
+  - `explorer.exe → wscript.exe`
+  - `wscript.exe → powershell.exe`
+- Identify any follow-on execution such as:
+  - PowerShell activity
+  - Additional script execution
+  - Suspicious binaries
+
+---
+
+### Step 3: Command Line Analysis
+- Look for indicators of obfuscation:
+  - Encoded commands (`-enc`)
+  - Base64 strings
+  - Use of `IEX` or `DownloadString`
+- Identify any external connections or payload retrieval attempts
+
+---
+
+### Step 4: Persistence Checks
+- Investigate scheduled task creation:
+  - `schtasks`
+  - `Register-ScheduledTask`
+- Review registry changes if available
+- Check for unusual autorun entries
+
+---
+
+### Step 5: Scope the Incident
+- Identify:
+  - Other affected hosts
+  - Similar command-line patterns across environment
+  - Related alerts within the same timeframe
+- Pivot on:
+  - Username
+  - Hostname
+  - File hash (if available)
+
+---
+
+### Step 6: Containment Actions
+- Isolate affected host if malicious activity is confirmed
+- Terminate suspicious processes
+- Block associated indicators (domains, hashes, IPs)
+- Reset compromised credentials if necessary
+
+---
+
+### Step 7: Escalation
+Escalate to Incident Response if:
+- Evidence of lateral movement
+- C2 communication detected
+- Persistence mechanisms confirmed
+- Additional payloads (e.g., Cobalt Strike) identified
+
+---
+
+### Step 8: Documentation
+- Record:
+  - Timeline of events
+  - Affected systems
+  - Indicators observed
+  - Actions taken
+- Update detection rules if gaps are identified
+
+---
+
+### Analyst Note
+Gootloader infections often represent initial access rather than a complete attack. Even if activity appears limited, treat it as a potential precursor to a larger compromise.
+
 Sources
 Microsoft Security Intelligence – Gootloader
 MITRE ATT&CK (S1138)

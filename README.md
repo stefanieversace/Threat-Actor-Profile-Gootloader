@@ -1,5 +1,11 @@
 # Gootloader Malware OSINT & Detection Analysis
 
+## Key Takeaways (TL;DR)
+- Gootloader uses SEO poisoning to deliver initial access via malicious ZIP + JavaScript
+- Execution relies on Windows Script Host and heavily obfuscated scripts
+- Post-execution activity may include PowerShell and persistence mechanisms
+- Detection opportunities exist across process creation, script execution, and task scheduling
+
 ## Overview
 This repository contains an open-source intelligence and detection-focused analysis of **Gootloader**, a malware family associated with **SEO poisoning**, **malicious ZIP/JavaScript delivery**, and **follow-on payload deployment**. The goal of this project is to document the threat actor tradecraft, map behaviours to **MITRE ATT&CK**, and provide practical **Microsoft Sentinel KQL detections**.
 
